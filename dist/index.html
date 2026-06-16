@@ -292,6 +292,68 @@
         line-height: 1.35;
       }
 
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+        margin: 16px 0;
+      }
+
+      .summary-card {
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        min-width: 0;
+      }
+
+      .summary-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.25;
+        margin-bottom: 7px;
+        text-transform: uppercase;
+      }
+
+      .summary-value {
+        color: var(--navy);
+        font-size: clamp(17px, 2vw, 22px);
+        font-weight: 800;
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+      }
+
+      .summary-value.accent {
+        color: var(--primary-dark);
+      }
+
+      .projection-panel {
+        margin-top: 16px;
+      }
+
+      .chart-wrap {
+        position: relative;
+        width: 100%;
+        height: clamp(260px, 34vw, 380px);
+      }
+
+      .section-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .section-head h3 {
+        margin: 0;
+      }
+
+      .section-head .muted {
+        margin-top: 4px;
+      }
+
       .result-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -422,7 +484,7 @@
 
       canvas {
         width: 100%;
-        height: 320px;
+        height: 100%;
       }
 
       /* +/- buttons */
@@ -485,7 +547,7 @@
       }
 
       .table-container {
-        max-height: 420px;
+        max-height: 360px;
         overflow: auto;
         border: 1px solid var(--border);
         border-radius: 10px;
@@ -595,6 +657,19 @@
         overflow: visible;
       }
 
+      .yearly-comparison.full-breakdown .table-container {
+        max-height: 460px;
+      }
+
+      .breakdown-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
       @media (max-width: 768px) {
         .yearly-table {
           font-size: 12px;
@@ -607,7 +682,8 @@
 
       @media (max-width: 900px) {
         .grid,
-        .result-grid {
+        .result-grid,
+        .summary-grid {
           grid-template-columns: 1fr;
         }
 
@@ -620,6 +696,18 @@
         .card,
         .results {
           padding: 16px;
+        }
+
+        .summary-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .summary-card:last-child {
+          grid-column: 1 / -1;
+        }
+
+        .chart-wrap {
+          height: 280px;
         }
 
         .row {
@@ -665,6 +753,49 @@
 
         .amount {
           text-align: left;
+        }
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        .container {
+          max-width: none;
+          padding: 0;
+        }
+
+        .actions,
+        #breakdown-toggle {
+          display: none !important;
+        }
+
+        .card,
+        .results,
+        .result-card,
+        .summary-card {
+          box-shadow: none;
+          break-inside: avoid;
+        }
+
+        .grid,
+        .result-grid,
+        .summary-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .chart-wrap {
+          height: 260px;
+        }
+
+        .table-container {
+          max-height: 420px;
+          overflow: hidden;
+        }
+
+        .yearly-table {
+          font-size: 10px;
         }
       }
 
@@ -907,6 +1038,29 @@
       <section id="results" class="results" style="display: none" aria-labelledby="res-title">
         <h2 id="res-title" style="margin: 0 0 10px">Estimated super balance (excluding fees)</h2>
 
+        <div class="summary-grid" aria-label="SMSF projection summary">
+          <div class="summary-card">
+            <div class="summary-label">Starting balance</div>
+            <div class="summary-value" id="summary-starting-balance">—</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Final projected balance</div>
+            <div class="summary-value accent" id="summary-final-balance">—</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Total contributions</div>
+            <div class="summary-value" id="summary-total-contributions">—</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Total earnings / growth</div>
+            <div class="summary-value" id="summary-growth">—</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Projected years</div>
+            <div class="summary-value" id="summary-years">—</div>
+          </div>
+        </div>
+
         <div class="compare" id="compare">
           <div class="flex">
             <span id="winner-badge" class="badge">—</span>
@@ -951,14 +1105,29 @@
           </div>
         </div>
 
-        <div class="card" style="margin-top: 16px">
-          <h3 style="margin: 0 0 10px">Balance Projection (Year-by-Year)</h3>
-          <canvas id="chart" aria-label="Line chart comparing balances over time" role="img"></canvas>
+        <div class="card projection-panel">
+          <div class="section-head">
+            <div>
+              <h3>Balance Projection</h3>
+              <div class="muted">Chart labels are sampled at key milestones to keep long projections readable.</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="chart" aria-label="Line chart comparing balances over time" role="img"></canvas>
+          </div>
         </div>
 
         <!-- Year-by-Year Table -->
-        <div class="card yearly-comparison">
-          <h3 style="margin: 0 0 10px">Year-by-Year Breakdown</h3>
+        <div class="card yearly-comparison" id="yearly-card">
+          <div class="breakdown-actions">
+            <div>
+              <h3 style="margin: 0 0 4px">Projection Milestones</h3>
+              <div class="muted" id="breakdown-note">Showing key milestone years. CSV export still includes the full year-by-year data.</div>
+            </div>
+            <button class="btn ghost" id="breakdown-toggle" type="button" aria-expanded="false">
+              Show full yearly breakdown
+            </button>
+          </div>
           <div class="table-container">
             <table class="yearly-table" id="yearly-table" aria-label="Year by year balance comparison">
               <colgroup>
@@ -1001,6 +1170,13 @@
 
       const fmtAUD = (n) =>
         new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", minimumFractionDigits: 2 }).format(n);
+      const fmtCompactAUD = (n) =>
+        new Intl.NumberFormat("en-AU", {
+          style: "currency",
+          currency: "AUD",
+          notation: "compact",
+          maximumFractionDigits: 1,
+        }).format(n);
       const fmtPct = (n) => `${new Intl.NumberFormat("en-AU", { maximumFractionDigits: 2 }).format(n)}%`;
 
       const debounce = (fn, ms) => {
@@ -1098,6 +1274,7 @@
       // State
       const STORAGE_KEY = "smsf-comparison-state-v4";
       const getEl = (id) => document.getElementById(id);
+      let showFullYearlyBreakdown = false;
 
       function readScenario(side) {
         const bal = parseNumber(getEl(`${side}-balance`).value);
@@ -1195,6 +1372,15 @@
         getEl(`${side}-growth-pct`).textContent = fmtPct(r.growthPct);
       }
 
+      function renderSummary(resR, scenarioR, years) {
+        const totalContributions = (resR.totalEmployerContributions[years] || 0) + (resR.totalSSContributions[years] || 0);
+        getEl("summary-starting-balance").textContent = fmtCompactAUD(scenarioR.bal);
+        getEl("summary-final-balance").textContent = fmtCompactAUD(resR.final);
+        getEl("summary-total-contributions").textContent = fmtCompactAUD(totalContributions);
+        getEl("summary-growth").textContent = fmtCompactAUD(resR.growthAmt);
+        getEl("summary-years").textContent = `${years} years`;
+      }
+
       function renderComparison(resL, resR, years) {
         const winner =
           resR.final > resL.final
@@ -1223,13 +1409,35 @@
       // Yearly table:
       // - Current Difference = YoY change for Current (contrib + growth)
       // - SMSF Difference = cumulative difference vs starting SMSF balance (includes contrib + growth)
-      function renderYearlyTable(resL, resR, years) {
+      function getMilestoneYears(years, showFull = false) {
+        if (showFull) return Array.from({ length: years + 1 }, (_, i) => i);
+        const milestoneCandidates = [1, 5, 10, 15, 20, years].filter((year) => year > 0 && year <= years);
+        return [...new Set(milestoneCandidates)].sort((a, b) => a - b);
+      }
+
+      function updateBreakdownControls(years) {
+        const toggle = getEl("breakdown-toggle");
+        const card = getEl("yearly-card");
+        const note = getEl("breakdown-note");
+        if (!toggle || !card || !note) return;
+        const totalRows = years + 1;
+        const milestoneRows = getMilestoneYears(years, false).length;
+        card.classList.toggle("full-breakdown", showFullYearlyBreakdown);
+        toggle.setAttribute("aria-expanded", showFullYearlyBreakdown ? "true" : "false");
+        toggle.textContent = showFullYearlyBreakdown ? "Show milestone view" : "Show full yearly breakdown";
+        note.textContent = showFullYearlyBreakdown
+          ? `Showing all ${totalRows} yearly rows in a contained scroll area.`
+          : `Showing ${milestoneRows} key milestone rows. CSV export still includes the full year-by-year data.`;
+      }
+
+      function renderYearlyTable(resL, resR, years, showFull = false) {
         const tbody = getEl("yearly-table-body");
         tbody.innerHTML = "";
 
         const smsfStart = resR.series[0] || 0;
+        const rowsToShow = getMilestoneYears(years, showFull);
 
-        for (let y = 0; y <= years; y++) {
+        rowsToShow.forEach((y) => {
           const leftBal = resL.series[y] || 0;
           const rightBal = resR.series[y] || 0;
 
@@ -1244,58 +1452,71 @@
 
           const tr = document.createElement("tr");
           tr.innerHTML = `
-          <td class="year-col"><strong>Year ${y}</strong></td>
+          <td class="year-col" data-label="Year"><strong>Year ${y}${y === years ? " (Final)" : ""}</strong></td>
 
-          <td class="current-balance">${fmtAUD(leftBal)}</td>
-          <td class="current-diff">${y === 0 ? "—" : `${currYoYSymbol}${fmtAUD(currYoY)}`}</td>
+          <td class="current-balance" data-label="Current Super Balance">${fmtAUD(leftBal)}</td>
+          <td class="current-diff" data-label="Current Super Difference">${y === 0 ? "—" : `${currYoYSymbol}${fmtAUD(currYoY)}`}</td>
 
-          <td class="smsf-balance">${fmtAUD(rightBal)}</td>
-          <td class="difference ${smsfClass}">${y === 0 ? "—" : `${smsfSymbol}${fmtAUD(smsfCumDiff)}`}</td>
+          <td class="smsf-balance" data-label="SMSF Balance">${fmtAUD(rightBal)}</td>
+          <td class="difference ${smsfClass}" data-label="SMSF Difference">${y === 0 ? "—" : `${smsfSymbol}${fmtAUD(smsfCumDiff)}`}</td>
 
-          <td>${y === 0 ? "—" : fmtAUD(resL.employerContributions[y])}</td>
-          <td class="running-total">${fmtAUD(resL.totalEmployerContributions[y])}</td>
+          <td data-label="Employer Contrib. (Current)">${y === 0 ? "—" : fmtAUD(resL.employerContributions[y])}</td>
+          <td class="running-total" data-label="Total Employer Contrib. (Current)">${fmtAUD(resL.totalEmployerContributions[y])}</td>
 
-          <td>${y === 0 ? "—" : resL.ssContributions[y] > 0 ? fmtAUD(resL.ssContributions[y]) : "—"}</td>
-          <td class="running-total">${resL.totalSSContributions[y] > 0 ? fmtAUD(resL.totalSSContributions[y]) : "—"}</td>
+          <td data-label="Salary Sacrifice (Current)">${y === 0 ? "—" : resL.ssContributions[y] > 0 ? fmtAUD(resL.ssContributions[y]) : "—"}</td>
+          <td class="running-total" data-label="Total Salary Sacrifice (Current)">${resL.totalSSContributions[y] > 0 ? fmtAUD(resL.totalSSContributions[y]) : "—"}</td>
 
-          <td>${y === 0 ? "—" : fmtAUD(resR.employerContributions[y])}</td>
-          <td class="running-total">${fmtAUD(resR.totalEmployerContributions[y])}</td>
+          <td data-label="Employer Contrib. (SMSF)">${y === 0 ? "—" : fmtAUD(resR.employerContributions[y])}</td>
+          <td class="running-total" data-label="Total Employer Contrib. (SMSF)">${fmtAUD(resR.totalEmployerContributions[y])}</td>
 
-          <td>${y === 0 ? "—" : resR.ssContributions[y] > 0 ? fmtAUD(resR.ssContributions[y]) : "—"}</td>
-          <td class="running-total">${resR.totalSSContributions[y] > 0 ? fmtAUD(resR.totalSSContributions[y]) : "—"}</td>
+          <td data-label="Salary Sacrifice (SMSF)">${y === 0 ? "—" : resR.ssContributions[y] > 0 ? fmtAUD(resR.ssContributions[y]) : "—"}</td>
+          <td class="running-total" data-label="Total Salary Sacrifice (SMSF)">${resR.totalSSContributions[y] > 0 ? fmtAUD(resR.totalSSContributions[y]) : "—"}</td>
         `;
           tbody.appendChild(tr);
-        }
+        });
       }
 
       // Chart
       let chart;
-      function renderChart(labels, leftSeries, rightSeries) {
+      function getChartYears(years) {
+        const step = years > 20 ? 5 : years > 10 ? 2 : 1;
+        const sampled = [];
+        for (let y = 0; y <= years; y += step) sampled.push(y);
+        if (sampled[sampled.length - 1] !== years) sampled.push(years);
+        return sampled;
+      }
+
+      function renderChart(years, leftSeries, rightSeries) {
         const ctx = getEl("chart").getContext("2d");
         if (chart) {
           chart.destroy();
         }
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const chartYears = getChartYears(years);
         chart = new Chart(ctx, {
           type: "line",
           data: {
-            labels,
+            labels: chartYears.map((year) => `Year ${year}`),
             datasets: [
               {
                 label: "Current Superannuation",
-                data: leftSeries,
+                data: chartYears.map((year) => leftSeries[year] || 0),
                 borderWidth: 2,
                 borderColor: "rgb(30, 58, 95)",
                 backgroundColor: "rgba(30, 58, 95, 0.1)",
+                pointRadius: chartYears.length > 12 ? 2 : 3,
+                pointHoverRadius: 5,
                 fill: false,
                 tension: 0.15,
               },
               {
                 label: "SMSF with ASG + Partners",
-                data: rightSeries,
+                data: chartYears.map((year) => rightSeries[year] || 0),
                 borderWidth: 2,
                 borderColor: "rgb(184, 147, 58)",
                 backgroundColor: "rgba(184, 147, 58, 0.12)",
+                pointRadius: chartYears.length > 12 ? 2 : 3,
+                pointHoverRadius: 5,
                 fill: false,
                 tension: 0.15,
               },
@@ -1310,8 +1531,19 @@
               tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtAUD(ctx.parsed.y)}` } },
             },
             scales: {
-              y: { ticks: { callback: (v) => fmtAUD(v) } },
-              x: { title: { display: true, text: "Year" } },
+              y: {
+                ticks: {
+                  callback: (v) => fmtCompactAUD(v),
+                  maxTicksLimit: 6,
+                },
+              },
+              x: {
+                ticks: {
+                  maxRotation: 0,
+                  autoSkip: false,
+                },
+                title: { display: true, text: "Projection milestone" },
+              },
             },
             animation: reduceMotion ? false : { duration: 600 },
           },
@@ -1520,11 +1752,12 @@
             renderResults("right", resR, R.years);
 
             const years = Math.min(L.years, R.years);
-            const labels = Array.from({ length: years + 1 }, (_, i) => i);
+            renderSummary(resR, R, years);
             renderComparison(resL, resR, years);
 
-            renderYearlyTable(resL, resR, years);
-            renderChart(labels, resL.series.slice(0, years + 1), resR.series.slice(0, years + 1));
+            updateBreakdownControls(years);
+            renderYearlyTable(resL, resR, years, showFullYearlyBreakdown);
+            renderChart(years, resL.series, resR.series);
 
             getEl("results").style.display = "block";
             saveStateToStorage();
@@ -1640,6 +1873,17 @@
           exportCSV(resL, resR, years);
         });
         getEl("share-btn").addEventListener("click", copyShareLink);
+        getEl("breakdown-toggle").addEventListener("click", () => {
+          const L = readScenario("left");
+          const R = readScenario("right");
+          if (!(validateScenario("left", L) && validateScenario("right", R))) return;
+          const resL = projectYearlySeries(L.bal, L.salary, L.employer, L.ssEnabled, L.ssPct, L.growth, L.years);
+          const resR = projectYearlySeries(R.bal, R.salary, R.employer, R.ssEnabled, R.ssPct, R.growth, R.years);
+          const years = Math.min(L.years, R.years);
+          showFullYearlyBreakdown = !showFullYearlyBreakdown;
+          updateBreakdownControls(years);
+          renderYearlyTable(resL, resR, years, showFullYearlyBreakdown);
+        });
       }
 
       // Init
