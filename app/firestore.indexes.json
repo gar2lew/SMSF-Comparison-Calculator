@@ -1,0 +1,105 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "clients",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "clients",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "ownerUserId", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "projections",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "clientId", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "projections",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "ownerUserId", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "projections",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "scenarios",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "projectionId", "order": "ASCENDING" },
+        { "fieldPath": "displayOrder", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "notes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "entityType", "order": "ASCENDING" },
+        { "fieldPath": "entityId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "activityLog",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "ownerUserId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "activityLog",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "entityType", "order": "ASCENDING" },
+        { "fieldPath": "entityId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "reports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "ownerUserId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "reports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organisationId", "order": "ASCENDING" },
+        { "fieldPath": "projectionId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    }
+  ]
+}

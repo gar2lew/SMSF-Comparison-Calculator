@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function getUserOrg() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.organisationId;
+    }
+
+    match /reports/{orgId}/{userId}/{projectionId}/{fileName} {
+      allow get: if request.auth != null && orgId == getUserOrg();
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && orgId == getUserOrg();
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && orgId == getUserOrg();
+      allow delete: if request.auth != null
+        && orgId == getUserOrg()
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /logos/{orgId}/{fileName} {
+      allow get: if request.auth != null && orgId == getUserOrg();
+      allow create: if request.auth != null
+        && orgId == getUserOrg()
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow update: if request.auth != null
+        && orgId == getUserOrg()
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow delete: if request.auth != null
+        && orgId == getUserOrg()
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
