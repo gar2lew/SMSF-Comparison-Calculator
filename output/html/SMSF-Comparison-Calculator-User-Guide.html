@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SMSF Comparison Calculator User Guide</title>
+  <style>
+    :root {
+      --navy: #1e3a5f;
+      --navy-dark: #12263f;
+      --navy-soft: #e8eef5;
+      --gold: #b8933a;
+      --gold-dark: #80651f;
+      --gold-soft: #f7f0df;
+      --ink: #1f2933;
+      --muted: #5f6b76;
+      --line: #d7dee6;
+      --paper: #ffffff;
+      --success: #18715b;
+      --warning: #8a5b14;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: #e7ebef; color: var(--ink); }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10.25pt;
+      line-height: 1.42;
+    }
+    .document { padding: 24px 0 48px; }
+    .guide-page {
+      position: relative;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 24px;
+      padding: 17mm 16mm 18mm;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 8px 30px rgba(18, 38, 63, 0.16);
+    }
+    .cover {
+      display: grid;
+      min-height: 297mm;
+      padding: 0;
+      background:
+        radial-gradient(circle at 82% 20%, rgba(184, 147, 58, 0.28), transparent 28%),
+        linear-gradient(145deg, var(--navy-dark), var(--navy) 72%);
+      color: white;
+    }
+    .cover-inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 28mm 22mm;
+    }
+    .brand-mark {
+      width: 62px;
+      height: 6px;
+      margin-bottom: 26px;
+      border-radius: 6px;
+      background: var(--gold);
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: 10pt;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 150mm;
+      margin: 0;
+      color: white;
+      font-size: 31pt;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+    .cover-subtitle {
+      max-width: 130mm;
+      margin: 18px 0 0;
+      color: #dce7f2;
+      font-size: 15pt;
+      line-height: 1.35;
+    }
+    .cover-meta {
+      margin-top: 46px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.24);
+      color: #dce7f2;
+      font-size: 9.5pt;
+    }
+    h2 {
+      margin: 0 0 12px;
+      color: var(--navy);
+      font-size: 19pt;
+      line-height: 1.18;
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      margin: 18px 0 7px;
+      color: var(--navy);
+      font-size: 12.5pt;
+      line-height: 1.25;
+    }
+    p { margin: 0 0 9px; }
+    ul, ol { margin: 5px 0 11px; padding-left: 22px; }
+    li { margin-bottom: 5px; }
+    strong { color: var(--navy-dark); }
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 31px;
+      height: 31px;
+      margin-right: 9px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: white;
+      font-size: 13pt;
+      vertical-align: 3px;
+    }
+    .lead { color: var(--muted); font-size: 11.2pt; }
+    .callout {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border-left: 4px solid var(--gold);
+      border-radius: 0 6px 6px 0;
+      background: var(--gold-soft);
+    }
+    .callout.info { border-color: var(--navy); background: var(--navy-soft); }
+    .callout strong { display: block; margin-bottom: 3px; }
+    .quick-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+      counter-reset: quick;
+    }
+    .quick-step {
+      position: relative;
+      min-height: 75px;
+      padding: 12px 12px 12px 45px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fbfcfd;
+      counter-increment: quick;
+    }
+    .quick-step::before {
+      content: counter(quick);
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: white;
+      font-weight: 700;
+    }
+    .quick-step strong { display: block; margin-bottom: 3px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .panel {
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fbfcfd;
+    }
+    .panel h3 { margin-top: 0; }
+    table {
+      width: 100%;
+      margin: 10px 0 14px;
+      border-collapse: collapse;
+      font-size: 9.3pt;
+    }
+    thead { display: table-header-group; }
+    tr { break-inside: avoid; }
+    th {
+      padding: 7px 8px;
+      border: 1px solid var(--navy);
+      background: var(--navy);
+      color: white;
+      text-align: left;
+      font-size: 8.9pt;
+    }
+    td {
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) { background: #f7f9fb; }
+    .field-table th:first-child, .field-table td:first-child { width: 28%; }
+    .field-table th:last-child, .field-table td:last-child { width: 18%; }
+    .result-table th:first-child, .result-table td:first-child { width: 31%; }
+    .button {
+      display: inline-block;
+      margin: 0 2px;
+      padding: 2px 7px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f4f6f8;
+      color: var(--navy-dark);
+      font-size: 8.8pt;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .button.primary { border-color: var(--navy); background: var(--navy); color: white; }
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li { position: relative; padding-left: 23px; }
+    .checklist li::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 0;
+      width: 13px;
+      height: 13px;
+      border: 2px solid var(--gold);
+      border-radius: 3px;
+    }
+    .formula {
+      margin: 8px 0;
+      padding: 9px 11px;
+      border-radius: 5px;
+      background: var(--navy-soft);
+      color: var(--navy-dark);
+      font-weight: 700;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      margin: -7mm 0 9mm;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 8.3pt;
+    }
+    .page-footer {
+      position: absolute;
+      right: 16mm;
+      bottom: 8mm;
+      left: 16mm;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 5px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 8pt;
+    }
+    .page-footer .confidential { color: var(--gold-dark); font-weight: 700; }
+    .talk-track {
+      margin: 8px 0;
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: #f5f8fb;
+      color: var(--navy-dark);
+      font-style: italic;
+    }
+    .status-good { color: var(--success); font-weight: 700; }
+    .status-watch { color: var(--warning); font-weight: 700; }
+    .print-note {
+      width: 210mm;
+      margin: 0 auto 16px;
+      padding: 12px 15px;
+      border-radius: 7px;
+      background: var(--navy-dark);
+      color: white;
+      box-shadow: 0 5px 18px rgba(18, 38, 63, 0.14);
+    }
+    .print-note strong { color: var(--gold); }
+    a { color: var(--navy); }
+
+    @page { size: A4; margin: 0; }
+    @media print {
+      html, body { width: 210mm; background: white; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .document { padding: 0; }
+      .print-note { display: none; }
+      .guide-page {
+        width: 210mm;
+        height: 297mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        break-after: page;
+        page-break-after: always;
+      }
+      .guide-page:last-child { break-after: auto; page-break-after: auto; }
+      a { color: inherit; text-decoration: none; }
+    }
+    @media screen and (max-width: 820px) {
+      .document { padding: 0; }
+      .print-note, .guide-page { width: 100%; margin: 0; }
+      .guide-page { min-height: auto; padding: 24px 20px 58px; box-shadow: none; overflow: visible; }
+      .cover { min-height: 80vh; }
+      .cover-inner { min-width: 0; padding: 44px 8px; }
+      .page-header { margin: 0 0 22px; }
+      .page-footer { right: 20px; bottom: 18px; left: 20px; }
+      .quick-steps, .two-col { grid-template-columns: 1fr; }
+      h1 { font-size: 26pt; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-note">
+    <strong>Printing:</strong> Press Ctrl+P, choose A4, enable Background graphics, set Margins to None, then select Save as PDF.
+  </div>
+
+  <main class="document">
+    <section class="guide-page cover" aria-labelledby="guide-title">
+      <div class="cover-inner">
+        <div class="brand-mark"></div>
+        <p class="eyebrow">ASG staff resource</p>
+        <h1 id="guide-title">SMSF Comparison Calculator User Guide</h1>
+        <p class="cover-subtitle">Appointment guide for ASG staff</p>
+        <div class="cover-meta">
+          <p><strong style="color:white">Purpose:</strong> Enter consistent assumptions, explain the comparison clearly, and help clients understand the projected outcomes.</p>
+          <p>Version 1.0 | 17/07/2026</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-page" aria-labelledby="overview">
+      <div class="page-header"><span>SMSF Comparison Calculator</span><span>ASG staff guide</span></div>
+      <h2 id="overview"><span class="section-number">1</span>Overview</h2>
+      <p class="lead">The SMSF Comparison Calculator compares a client's current superannuation setup with an SMSF scenario using the same core member details and selected growth assumptions.</p>
+
+      <h3>What the calculator models</h3>
+      <ul>
+        <li>Current superannuation balance and annual salary.</li>
+        <li>Employer contributions based on the selected contribution rate.</li>
+        <li>Optional salary sacrifice as a percentage of annual salary.</li>
+        <li>Annual compound growth for 5, 10, 15, 20, 25, or 30 years.</li>
+        <li>A side-by-side comparison of projected balances, contributions, and growth.</li>
+        <li>A balance chart and year-by-year projection data.</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Important</strong>
+        This calculator provides illustrative estimates only. Results are not guaranteed and do not constitute financial, tax, legal, or investment advice. The calculator excludes tax, fees, insurance, contribution caps, contribution timing nuances, and market volatility.
+      </div>
+
+      <h3>How to use it in an appointment</h3>
+      <p>Use the calculator as a conversation aid. Explain each assumption before presenting the result, keep comparable settings aligned, and focus on the difference between scenarios rather than presenting either projection as a promised outcome.</p>
+
+      <div class="callout info">
+        <strong>Live recalculation</strong>
+        The calculator recalculates about 500 milliseconds after an input changes. You can also select <span class="button primary">Calculate</span> to refresh the results immediately.
+      </div>
+
+      <h3>Before the appointment</h3>
+      <ul class="checklist">
+        <li>Confirm the client's current superannuation balance.</li>
+        <li>Confirm annual salary and the employer contribution rate.</li>
+        <li>Ask whether salary sacrifice is currently used or being considered.</li>
+        <li>Decide which projection period is appropriate to discuss.</li>
+        <li>Be ready to explain the selected growth assumptions.</li>
+      </ul>
+      <div class="page-footer"><span class="confidential">ASG staff resource</span><span>Page 2 of 8</span></div>
+    </section>
+
+    <section class="guide-page" aria-labelledby="quick-start">
+      <div class="page-header"><span>SMSF Comparison Calculator</span><span>ASG staff guide</span></div>
+      <h2 id="quick-start"><span class="section-number">2</span>Appointment quick start</h2>
+      <p class="lead">Follow this sequence to create a clear and consistent comparison.</p>
+
+      <div class="quick-steps">
+        <div class="quick-step"><strong>Confirm the starting point</strong>Enter the client's current superannuation balance and annual salary in the left scenario.</div>
+        <div class="quick-step"><strong>Set current super assumptions</strong>Select the employer contribution rate, current fund growth rate, salary sacrifice setting, and projection period.</div>
+        <div class="quick-step"><strong>Match the SMSF inputs</strong>Use the Copy buttons to transfer the balance and salary, then align the other contribution settings for a fair comparison.</div>
+        <div class="quick-step"><strong>Select SMSF growth</strong>Choose the growth assumption you intend to model and explain it to the client.</div>
+        <div class="quick-step"><strong>Calculate and review</strong>Select Calculate or wait for the live recalculation, then confirm the summary and both scenario cards.</div>
+        <div class="quick-step"><strong>Discuss the detail</strong>Review the chart, Projection Milestones, and full yearly breakdown when more detail is useful.</div>
+        <div class="quick-step"><strong>Save or share</strong>Use Export CSV for the full data or Share to copy a link containing the current settings.</div>
+        <div class="quick-step"><strong>Reset when finished</strong>Select Reset to Example before starting a new client discussion on a shared device.</div>
+      </div>
+
+      <div class="callout">
+        <strong>Fair comparison rule</strong>
+        Match the starting balance, salary, employer contribution rate, salary sacrifice setting, and projection period before comparing growth assumptions. This keeps the discussion focused on the intended scenario difference.
+      </div>
+
+      <h3>Suggested opening explanation</h3>
+      <div class="talk-track">"We will start with the same member details in both scenarios. The calculator then applies the selected contribution and growth assumptions so we can compare the projected balances over the same period."</div>
+
+      <h3>Check before discussing the result</h3>
+      <ul class="checklist">
+        <li>Both starting balances match.</li>
+        <li>Both annual salaries match.</li>
+        <li>Employer contribution rates reflect the intended comparison.</li>
+        <li>Salary sacrifice is either aligned or deliberately different.</li>
+        <li>Projection periods match.</li>
+        <li>The client understands that growth rates are assumptions.</li>
+      </ul>
+      <div class="page-footer"><span class="confidential">ASG staff resource</span><span>Page 3 of 8</span></div>
+    </section>
+
+    <section class="guide-page" aria-labelledby="inputs">
+      <div class="page-header"><span>SMSF Comparison Calculator</span><span>ASG staff guide</span></div>
+      <h2 id="inputs"><span class="section-number">3</span>Input fields</h2>
+      <p class="lead">The Current Superannuation Setup appears on the left. SMSF with ASG + Partners appears on the right.</p>
+
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>How it is used</th><th>Available values</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Current Superannuation Balance ($)</strong></td><td>Starting balance at Year 0. Use the same balance in both scenarios for a like-for-like comparison.</td><td>Positive currency value</td></tr>
+          <tr><td><strong>Annual Salary ($)</strong></td><td>Used to calculate annual employer and salary sacrifice contributions.</td><td>Positive currency value</td></tr>
+          <tr><td><strong>Employer Contribution Rate</strong></td><td>Annual employer contribution equals salary multiplied by this rate.</td><td>0%, 12%, 13%, 14%, or 15%</td></tr>
+          <tr><td><strong>Growth</strong></td><td>Annual compound growth applied after the year's contributions are added.</td><td>Current: 5%, 7.5%, 10%, 12.5%<br>SMSF: 10%, 12.5%, 15%, 17.5%</td></tr>
+          <tr><td><strong>Salary Sacrifice?</strong></td><td>When enabled, adds the selected percentage of annual salary as an additional yearly contribution.</td><td>0% to 100%</td></tr>
+          <tr><td><strong>Years of Performance</strong></td><td>Sets the projection horizon shown in the results.</td><td>5, 10, 15, 20, 25, or 30 years</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Number controls</h3>
+      <div class="two-col">
+        <div class="panel"><h3>Balance and salary</h3><p>Type the value directly or use the minus and plus buttons. Balance changes in $10,000 steps. Salary changes in $5,000 steps.</p></div>
+        <div class="panel"><h3>Salary sacrifice</h3><p>Enable the option first, then type a percentage or use the minus and plus buttons to adjust it by 1 percentage point.</p></div>
+      </div>
+
+      <h3>Copy controls</h3>
+      <p>The SMSF panel includes <span class="button">Copy</span> beside balance and salary. Each button copies the matching value from the Current Superannuation Setup into the SMSF scenario and triggers recalculation.</p>
+
+      <div class="callout info">
+        <strong>Projection period warning</strong>
+        If the selected periods differ, the comparison uses the shorter projection period. Match the periods unless a shorter comparison is deliberate and clearly explained.
+      </div>
+      <div class="page-footer"><span class="confidential">ASG staff resource</span><span>Page 4 of 8</span></div>
+    </section>
+
+    <section class="guide-page" aria-labelledby="results-guide">
+      <div class="page-header"><span>SMSF Comparison Calculator</span><span>ASG staff guide</span></div>
+      <h2 id="results-guide"><span class="section-number">4</span>Understanding the results</h2>
+      <p class="lead">The result area moves from a high-level summary to scenario detail, then to the chart and projection table.</p>
+
+      <table class="result-table">
+        <thead><tr><th>Result</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Starting balance</strong></td><td>The starting balance used for the SMSF scenario.</td></tr>
+          <tr><td><strong>Final projected balance</strong></td><td>The projected SMSF balance at the comparison period.</td></tr>
+          <tr><td><strong>Total contributions</strong></td><td>The cumulative SMSF employer contributions plus salary sacrifice contributions over the comparison period.</td></tr>
+          <tr><td><strong>Total earnings / growth</strong></td><td>The projected final SMSF balance less the starting balance and total contributions.</td></tr>
+          <tr><td><strong>Projected years</strong></td><td>The period used for the comparison. This is the shorter period when scenario selections differ.</td></tr>
+          <tr><td><strong>Winner badge</strong></td><td>Identifies the scenario with the higher balance at the comparison period, or shows a tie.</td></tr>
+          <tr><td><strong>Final difference</strong></td><td>The difference between the two projected final balances.</td></tr>
+          <tr><td><strong>Growth difference</strong></td><td>The difference between the scenarios' projected growth amounts.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Scenario cards</h3>
+      <p>Each scenario shows its estimated balance after the selected years, its total change from the starting balance, and its growth percentage. The displayed growth amount includes contributions as well as investment growth, so use the summary's Total earnings / growth value when discussing investment earnings separately.</p>
+
+      <div class="formula">Projected yearly balance = (previous balance + annual contributions) x (1 + selected growth rate)</div>
+
+      <div class="callout">
+        <strong>Explain the assumption, not only the outcome</strong>
+        A higher selected growth rate compounds over time and can create a large difference. State the rate used in each scenario and remind the client that actual returns will vary.
+      </div>
+
+      <h3>Suggested result explanation</h3>
+      <div class="talk-track">"This result shows what the two balances could look like if the selected contribution and growth assumptions continued for the chosen period. It is an illustration, not a forecast or guarantee."</div>
+      <div class="page-footer"><span class="confidential">ASG staff resource</span><span>Page 5 of 8</span></div>
+    </section>
+
+    <section class="guide-page" aria-labelledby="detail">
+      <div class="page-header"><span>SMSF Comparison Calculator</span><span>ASG staff guide</span></div>
+      <h2 id="detail"><span class="section-number">5</span>Chart and projection detail</h2>
+
+      <h3>Balance Projection chart</h3>
+      <p>The line chart compares the two projected balances over time. Current Superannuation is shown in navy and SMSF with ASG + Partners is shown in gold. Labels are sampled at key years to keep longer projections readable.</p>
+      <ul>
+        <li>Use the overall direction to explain compounding.</li>
+        <li>Point out where the distance between the lines begins to widen.</li>
+        <li>Hover over a point on screen to see the balance for each scenario.</li>
+        <li>Avoid treating a smooth line as evidence that actual returns will be consistent each year.</li>
+      </ul>
+
+      <h3>Projection Milestones</h3>
+      <p>The default table shows Year 0, Year 1, and selected milestone years. This keeps long comparisons readable while retaining the most useful checkpoints.</p>
+      <table>
+        <thead><tr><th>Column group</th><th>What to look for</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Current Super Balance and Difference</strong></td><td>Projected current-fund balance and its year-over-year movement.</td></tr>
+          <tr><td><strong>SMSF Balance and Difference</strong></td><td>Projected SMSF balance and cumulative difference from the SMSF starting balance.</td></tr>
+          <tr><td><strong>Employer Contribution</strong></td><td>Annual contribution and running total for each scenario.</td></tr>
+          <tr><td><strong>Salary Sacrifice</strong></td><td>Annual salary sacrifice and running total for each scenario when enabled.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Full yearly breakdown</h3>
+      <p>Select <span class="button">Show full yearly breakdown</span> to display every year in a contained scroll area. Select <span class="button">Show milestone view</span> to return to the shorter view.</p>
+
+      <div class="callout info">
+        <strong>Full data remains available</strong>
+        The table may show only milestones, but Export CSV always downloads the complete year-by-year dataset for the comparison period.
+      </div>
+      <div class="page-footer"><span class="confidential">ASG staff resource</span><span>Page 6 of 8</span></div>
+    </section>
+
+    <section class="guide-page" aria-labelledby="actions">
+      <div class="page-header"><span>SMSF Comparison Calculator</span><span>ASG staff guide</span></div>
+      <h2 id="actions"><span class="section-number">6</span>Exporting, sharing, and resetting</h2>
+
+      <table class="result-table">
+        <thead><tr><th>Control</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><span class="button primary">Calculate</span></td><td>Validates both scenarios, calculates the projections, and refreshes the visible results.</td></tr>
+          <tr><td><span class="button">Reset to Example</span></td><td>Restores the example values, removes the calculator's saved browser state, and clears settings from the page URL.</td></tr>
+          <tr><td><span class="button">Export CSV</span></td><td>Downloads <strong>smsf_comparison.csv</strong> with complete year-by-year balances, differences, annual contributions, and cumulative contributions.</td></tr>
+          <tr><td><span class="button">Share</span></td><td>Copies a link containing the current settings for both scenarios. Opening the link restores those values.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Browser state</h3>
+      <p>The calculator saves the latest settings in the current browser. Returning to the calculator on the same browser can restore those values automatically.</p>
+
+      <div class="callout">
+        <strong>Client privacy on shared devices</strong>
+        Although the standalone calculator stores figures rather than client names, reset the calculator after each appointment on a shared device. Do not rely on browser storage as a formal client record.
+      </div>
+
+      <h3>Sharing checklist</h3>
+      <ul class="checklist">
+        <li>Confirm that the assumptions are correct before selecting Share.</li>
+        <li>Explain that the link contains the scenario inputs.</li>
+        <li>Remind the recipient that results remain illustrative.</li>
+        <li>Use approved ASG systems and processes when sending information to a client.</li>
+      </ul>
+
+      <h3>CSV handling</h3>
+      <p>The CSV is useful for internal review or approved follow-up analysis. Currency values are exported as numbers with two decimal places. Open the file in spreadsheet software and apply currency formatting if required.</p>
+
+      <div class="callout info">
+        <strong>PDF of this guide</strong>
+        To print this guide, press Ctrl+P, choose A4, enable Background graphics, set Margins to None, and select Save as PDF.
+      </div>
+      <div class="page-footer"><span class="confidential">ASG staff resource</span><span>Page 7 of 8</span></div>
+    </section>
+
+    <section class="guide-page" aria-labelledby="best-practice">
+      <div class="page-header"><span>SMSF Comparison Calculator</span><span>ASG staff guide</span></div>
+      <h2 id="best-practice"><span class="section-number">7</span>Best practices and troubleshooting</h2>
+
+      <div class="two-col">
+        <div class="panel">
+          <h3>During the appointment</h3>
+          <ul>
+            <li>Confirm each input aloud.</li>
+            <li>Keep like-for-like settings aligned.</li>
+            <li>Explain why growth assumptions differ.</li>
+            <li>Use the chart for the overall story and the table for detail.</li>
+            <li>Repeat the illustrative-results disclaimer before concluding.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Avoid</h3>
+          <ul>
+            <li>Describing the result as guaranteed.</li>
+            <li>Presenting growth rates without context.</li>
+            <li>Comparing different periods accidentally.</li>
+            <li>Ignoring excluded costs and market volatility.</li>
+            <li>Leaving prior settings on a shared device.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Common issues</h3>
+      <table>
+        <thead><tr><th>Message or issue</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Enter a positive balance.</strong></td><td>Enter a balance greater than $0 in the affected scenario.</td></tr>
+          <tr><td><strong>Enter a positive salary.</strong></td><td>Enter an annual salary greater than $0.</td></tr>
+          <tr><td><strong>Salary sacrifice must be a number.</strong></td><td>Enter a numeric percentage, or disable salary sacrifice.</td></tr>
+          <tr><td><strong>Salary sacrifice % must be 0-100.</strong></td><td>Enter a percentage from 0 to 100.</td></tr>
+          <tr><td><strong>Copy failed.</strong></td><td>The browser could not access the clipboard. Copy the address from the browser bar instead.</td></tr>
+          <tr><td><strong>Results use fewer years than expected.</strong></td><td>Check both Years of Performance selections. The comparison uses the shorter projection period.</td></tr>
+          <tr><td><strong>Old values appear on return.</strong></td><td>Select Reset to Example to clear the saved browser state.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Closing explanation</h3>
+      <div class="talk-track">"The comparison helps us discuss how different assumptions may affect the outcome. It does not include every cost, rule, or market movement, so it should be considered alongside the appropriate advice and supporting information."</div>
+
+      <p class="status-good">Good appointment outcome: the client understands the inputs, the scenario difference, and the limits of the illustration.</p>
+      <p class="status-watch">Follow up if: an input is uncertain, contribution arrangements require confirmation, or the client asks for advice outside the calculator's scope.</p>
+      <div class="page-footer"><span class="confidential">ASG staff resource</span><span>Page 8 of 8</span></div>
+    </section>
+  </main>
+</body>
+</html>
