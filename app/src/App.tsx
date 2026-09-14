@@ -9,6 +9,7 @@ import { ProjectionsPage } from '@/pages/ProjectionsPage'
 import { ProjectionWorkspace } from '@/pages/ProjectionWorkspace'
 import { ReportsPage } from '@/pages/ReportsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
+import { ComparisonPage } from '@/pages/ComparisonPage'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/projections/:id" element={<ProjectionWorkspace />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/comparison/new" element={<ComparisonPage />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
