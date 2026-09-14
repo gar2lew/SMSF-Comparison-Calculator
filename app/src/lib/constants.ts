@@ -2,6 +2,17 @@ export const MAX_BALANCE = 1_000_000_000
 export const MAX_SALARY = 5_000_000
 export const CALCULATION_DEBOUNCE_MS = 500
 
+// Keep staff names in one place so the login dropdown can be updated without
+// changing the page layout.
+export const STAFF_OPTIONS = [
+  { value: '', label: 'Choose your name' },
+  { value: 'mike-enderby', label: 'Mike Enderby' },
+  { value: 'blake-duffield', label: 'Blake Duffield' },
+  { value: 'joe-villiers-dunn', label: 'Joe Villiers-Dunn' },
+  { value: 'josh-robinson', label: 'Josh Robinson' },
+  { value: 'sam-roberts', label: 'Sam Roberts' },
+] as const
+
 export const EMPLOYER_RATE_OPTIONS = [
   { value: 0, label: '0%' },
   { value: 0.12, label: '12%' },
