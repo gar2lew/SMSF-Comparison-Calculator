@@ -64,7 +64,7 @@ Saving a comparison records:
 - Comparison period and projected advantage.
 - Creation and update timestamps.
 
-Firestore stores report history. A save failure must not clear or alter the active calculation. The application shows an actionable error and allows the adviser to retry.
+Browser-local storage stores report history on the current device. A save failure must not clear or alter the active calculation. The application shows an actionable error and allows the adviser to retry.
 
 Saved reports can be reopened. Report removal requires confirmation. Dates use Australian display formatting.
 
@@ -85,7 +85,7 @@ Shared design tokens and reusable primitives will centralise colours, typography
 
 - Missing adviser session: redirect to `/login`.
 - Invalid adviser value: clear the session and return to the selector.
-- Firestore unavailable: preserve local calculator state, show an error, and offer retry.
+- Browser storage unavailable: preserve calculator state, show an error, and offer retry.
 - Report unavailable: show a clear not-found state with a dashboard return action.
 - No reports: show the designed first-use dashboard state.
 

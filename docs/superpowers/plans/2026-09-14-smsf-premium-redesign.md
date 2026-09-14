@@ -4,9 +4,9 @@
 
 **Goal:** Deliver a premium ASG adviser landing page, personal/shared report dashboard, and native React version of the original SMSF comparison calculator without changing its calculation behaviour.
 
-**Architecture:** The `app` Vite project becomes the single deployed application. A session-backed adviser store controls routing and display identity, Firebase anonymous auth supplies a non-interactive database principal, and a dedicated comparison report repository persists adviser-tagged snapshots. The calculator uses controlled React state around the existing pure calculation engine and receives a visual polish rather than a workflow rewrite.
+**Architecture:** The `app` Vite project becomes the single deployed application. A session-backed adviser store controls routing and display identity, and a browser-local comparison report repository persists adviser-tagged snapshots on the current device. The calculator uses controlled React state around the existing pure calculation engine and receives a visual polish rather than a workflow rewrite.
 
-**Tech Stack:** React 19, TypeScript 5.7, React Router 7, Zustand, Firebase Auth/Firestore Lite, Tailwind CSS 3, Recharts, Vitest, Testing Library.
+**Tech Stack:** React 19, TypeScript 5.7, React Router 7, Zustand, browser storage, Tailwind CSS 3, Recharts, Vitest, Testing Library.
 
 **Spec:** `docs/superpowers/specs/2026-09-14-smsf-premium-redesign-design.md`
 
@@ -15,7 +15,7 @@
 - Work occurs on `codex/smsf-premium-redesign`.
 - Preserve the original calculator formulas, defaults, controls, URL-sharing behaviour, and comparison outputs.
 - Adviser selection is identification and filtering, not secure authorisation.
-- No email/password UI; Firebase anonymous auth may run invisibly for Firestore access.
+- No email/password or anonymous-auth dependency is required for the comparison flow.
 - Dates displayed to users use Australian formatting.
 - Existing generated `app/dist` modifications are excluded from feature commits.
 - The Vercel project Root Directory remains `app`.
@@ -113,7 +113,7 @@ git commit -m "chore: add premium theme and component test harness"
 
 ---
 
-### Task 2: Adviser Session and Invisible Firebase Access
+### Task 2: Adviser Session and Protected Routes
 
 **Files:**
 - Create: `app/src/lib/adviserSession.ts`
@@ -121,9 +121,7 @@ git commit -m "chore: add premium theme and component test harness"
 - Create: `app/src/stores/adviserStore.ts`
 - Create: `app/src/components/routing/AdviserRoute.tsx`
 - Create: `app/src/components/routing/AdviserRoute.test.tsx`
-- Modify: `app/src/lib/firebase.ts`
 - Modify: `app/src/App.tsx`
-- Modify: `app/firestore.rules`
 
 **Interfaces:**
 - Produces: `AdviserSession { id: string; name: string }`.
@@ -169,17 +167,9 @@ Run: `npx vitest run src/components/routing/AdviserRoute.test.tsx`
 
 Expected: FAIL because `AdviserRoute` does not exist.
 
-- [ ] **Step 7: Implement the store, route guard, and anonymous auth bootstrap**
+- [ ] **Step 7: Implement the store and route guard**
 
-On app startup call `signInAnonymously(auth)` only when no Firebase user exists. The adviser store remains independent of Firebase identity. Replace the email/password guard in `AppLayout` with `AdviserRoute`.
-
-Set Firestore rules to require a Firebase principal:
-
-```text
-match /comparisonReports/{reportId} {
-  allow read, create, update, delete: if request.auth != null;
-}
-```
+The adviser store is independent of Firebase identity. Replace the email/password guard in `AppLayout` with `AdviserRoute`.
 
 - [ ] **Step 8: Run focused and full checks**
 
@@ -195,7 +185,7 @@ Expected: tests and typecheck pass.
 - [ ] **Step 9: Commit**
 
 ```powershell
-git add app/src/lib/adviserSession.ts app/src/lib/adviserSession.test.ts app/src/stores/adviserStore.ts app/src/components/routing app/src/lib/firebase.ts app/src/App.tsx app/firestore.rules
+git add app/src/lib/adviserSession.ts app/src/lib/adviserSession.test.ts app/src/stores/adviserStore.ts app/src/components/routing app/src/App.tsx app/src/components/layout/AppLayout.tsx
 git commit -m "feat: add adviser sessions and protected routes"
 ```
 
@@ -378,14 +368,15 @@ git commit -m "feat: add premium single-page SMSF calculator"
 
 **Files:**
 - Modify: `app/src/lib/types.ts`
-- Modify: `app/src/lib/firestore.ts`
+- Create: `app/src/lib/comparisonReports.ts`
+- Create: `app/src/lib/comparisonReports.test.ts`
 - Create: `app/src/lib/reportFilters.ts`
 - Create: `app/src/lib/reportFilters.test.ts`
 - Modify: `app/src/pages/ComparisonPage.tsx`
 
 **Interfaces:**
 - Produces: `ComparisonReport` with `id`, `adviserId`, `adviserName`, `clientName`, `state`, `outcomeSummary`, `createdAt`, and `updatedAt`.
-- Produces: `saveComparisonReport`, `getComparisonReport`, `listComparisonReports`, and `deleteComparisonReport`.
+- Produces: `saveComparisonReport`, `getComparisonReport`, `listComparisonReports`, and `deleteComparisonReport` backed by localStorage key `asg-smsf-comparison-reports-v1`.
 - Produces: `filterReports(reports, mode, adviserId)` where mode is `'mine' | 'all'`.
 
 - [ ] **Step 1: Write failing report-filter tests**
@@ -400,7 +391,7 @@ Expected: FAIL because the helper does not exist.
 
 - [ ] **Step 3: Implement report types, repository, and filters**
 
-Use the `comparisonReports` Firestore collection. Store calculator state and summary values as plain serialisable data. Convert Firestore timestamps at the repository boundary and sort descending by creation time.
+Use browser `localStorage`. Store calculator state and summary values as plain serialisable data, validate parsed records at the repository boundary, and sort descending by creation time.
 
 - [ ] **Step 4: Connect save and reopen flows**
 
@@ -420,7 +411,7 @@ Expected: tests and typecheck pass.
 - [ ] **Step 6: Commit**
 
 ```powershell
-git add app/src/lib/types.ts app/src/lib/firestore.ts app/src/lib/reportFilters.ts app/src/lib/reportFilters.test.ts app/src/pages/ComparisonPage.tsx
+git add app/src/lib/types.ts app/src/lib/comparisonReports.ts app/src/lib/comparisonReports.test.ts app/src/lib/reportFilters.ts app/src/lib/reportFilters.test.ts app/src/pages/ComparisonPage.tsx
 git commit -m "feat: save and reopen adviser comparison reports"
 ```
 
@@ -445,7 +436,7 @@ git commit -m "feat: save and reopen adviser comparison reports"
 
 - [ ] **Step 1: Write failing dashboard tests**
 
-Cover adviser greeting, Mine default, All toggle, report metadata, New Comparison link, empty state, Firestore failure message, and sign-out redirect.
+Cover adviser greeting, Mine default, All toggle, report metadata, New Comparison link, empty state, browser-storage failure message, and sign-out redirect.
 
 - [ ] **Step 2: Run dashboard tests and confirm RED**
 
@@ -523,9 +514,9 @@ Verify at 1440×900, 768×1024, and 390×844:
 - Result hierarchy, chart, CSV, and share actions work.
 - Keyboard focus is visible and every control has an accessible name.
 
-- [ ] **Step 4: Verify Firebase and Vercel prerequisites**
+- [ ] **Step 4: Verify Vercel prerequisites**
 
-Confirm Firebase Anonymous Authentication is enabled, Firestore rules are deployed, and all five `VITE_FIREBASE_*` values exist for Vercel Production and Preview. Confirm Vercel Root Directory is `app` and redeploy without stale cache.
+Confirm Vercel Root Directory is `app` and redeploy without stale cache. The landing, dashboard, calculator, and local report history must start without Firebase environment variables.
 
 - [ ] **Step 5: Review the final diff**
 
@@ -542,7 +533,7 @@ Expected: only intentional source, test, configuration, rules, spec, and plan fi
 - [ ] **Step 6: Commit verified fixes, if any**
 
 ```powershell
-git add app/src app/firestore.rules app/package.json app/package-lock.json app/vitest.config.ts
+git add app/src app/package.json app/package-lock.json app/vitest.config.ts
 git commit -m "fix: resolve SMSF redesign verification findings"
 ```
 
