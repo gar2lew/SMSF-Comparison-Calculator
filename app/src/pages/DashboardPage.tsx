@@ -1,12 +1,19 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, CalendarDays, FileText, Plus, Sparkles, Trash2, UserRound } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useAdviserStore } from '@/stores/adviserStore'
 import { deleteComparisonReport, listComparisonReports } from '@/lib/comparisonReports'
 import { filterReports, type ReportFilterMode } from '@/lib/reportFilters'
 import { fmtAUD } from '@/lib/utils'
 
 const formatDate = (value: string) => new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value))
+
+interface DashboardStat {
+  label: string
+  value: string | number
+  icon: LucideIcon
+}
 
 export function DashboardPage() {
   const adviser = useAdviserStore((state) => state.adviser)
@@ -23,6 +30,12 @@ export function DashboardPage() {
       advantage: Math.max(0, ...visible.map((report) => report.outcomeSummary.deltaFinal)),
     }
   }, [visible])
+  const statCards: DashboardStat[] = [
+    { label: 'Comparisons', value: stats.total, icon: FileText },
+    { label: 'This month', value: stats.month, icon: CalendarDays },
+    { label: 'Clients', value: stats.clients, icon: UserRound },
+    { label: 'Strongest advantage', value: fmtAUD(stats.advantage), icon: Sparkles },
+  ]
 
   const remove = (id: string) => {
     if (!window.confirm('Remove this saved comparison?')) return
@@ -40,7 +53,7 @@ export function DashboardPage() {
         </div>
       </section>
       <section className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        {[["Comparisons", stats.total, FileText], ["This month", stats.month, CalendarDays], ["Clients", stats.clients, UserRound], ["Strongest advantage", fmtAUD(stats.advantage), Sparkles]].map(([label, value, Icon]) => <div key={String(label)} className="premium-card p-5"><Icon className="mb-5 h-5 w-5 text-[#a47c2c]" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">{label as string}</p><p className="mt-2 font-serif text-2xl text-navy md:text-3xl">{value as string | number}</p></div>)}
+        {statCards.map(({ label, value, icon: Icon }) => <div key={label} className="premium-card p-5"><Icon className="mb-5 h-5 w-5 text-[#a47c2c]" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p><p className="mt-2 font-serif text-2xl text-navy md:text-3xl">{value}</p></div>)}
       </section>
       <section className="premium-card overflow-hidden">
         <div className="flex flex-col justify-between gap-4 border-b border-[#e8e0d2] px-6 py-5 sm:flex-row sm:items-center"><div><p className="eyebrow">Report history</p><h2 className="mt-1 font-serif text-2xl text-navy">Saved comparisons</h2></div><div className="inline-flex rounded-xl bg-[#f2ece1] p-1" aria-label="Report visibility">{(['mine', 'all'] as const).map((value) => <button key={value} type="button" onClick={() => setMode(value)} aria-pressed={mode === value} className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${mode === value ? 'bg-white text-navy shadow-sm' : 'text-slate-500'}`}>{value === 'mine' ? 'My Reports' : 'All Reports'}</button>)}</div></div>

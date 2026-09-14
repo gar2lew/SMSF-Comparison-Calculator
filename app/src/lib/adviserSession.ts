@@ -7,7 +7,7 @@ export interface AdviserSession {
 
 export const ADVISER_SESSION_KEY = 'asg-smsf-adviser-session-v1'
 
-const advisers = new Map(
+const advisers = new Map<string, string>(
   STAFF_OPTIONS.filter((option) => option.value).map((option) => [option.value, option.label]),
 )
 
