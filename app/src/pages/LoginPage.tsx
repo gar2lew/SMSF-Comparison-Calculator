@@ -1,9 +1,18 @@
 import { useState } from 'react'
-import { ArrowRight, BriefcaseBusiness, LockKeyhole, UserRound } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowRight, BriefcaseBusiness, ChevronDown, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react'
 import { STAFF_OPTIONS } from '@/lib/constants'
+import { useAdviserStore } from '@/stores/adviserStore'
 
 export function LoginPage() {
   const [staffName, setStaffName] = useState('')
+  const selectAdviser = useAdviserStore((state) => state.selectAdviser)
+  const navigate = useNavigate()
+
+  const enterWorkspace = (event: React.FormEvent) => {
+    event.preventDefault()
+    if (selectAdviser(staffName)) navigate('/dashboard')
+  }
 
   return (
     <div className="min-h-screen bg-[#f5f1e9] p-4 text-[#10233d] sm:p-8">
@@ -43,23 +52,26 @@ export function LoginPage() {
             <div className="my-7 h-px w-24 bg-[#c8a34f]" />
             <p className="mb-10 text-sm leading-6 text-slate-500">Select your name to open the SMSF comparison workspace.</p>
 
-            <label htmlFor="staff-name" className="mb-2 block text-xs font-bold uppercase tracking-[0.16em] text-[#10233d]">Your name</label>
-            <div className="relative">
-              <UserRound className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <select
-                id="staff-name"
-                value={staffName}
-                onChange={(event) => setStaffName(event.target.value)}
-                className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-11 py-4 text-sm text-[#10233d] shadow-sm outline-none transition focus:border-[#c8a34f] focus:ring-2 focus:ring-[#c8a34f]/20"
-              >
-                {STAFF_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
-            </div>
-            <p className="mt-3 text-xs text-slate-400">All client meetings are conducted in person.</p>
+            <form onSubmit={enterWorkspace}>
+              <label htmlFor="staff-name" className="mb-2 block text-xs font-bold uppercase tracking-[0.16em] text-[#10233d]">Your name</label>
+              <div className="relative">
+                <UserRound className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <select
+                  id="staff-name"
+                  value={staffName}
+                  onChange={(event) => setStaffName(event.target.value)}
+                  className="premium-control appearance-none pl-11 pr-11"
+                >
+                  {STAFF_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a77b21]" />
+              </div>
+              <p className="mt-3 flex items-center gap-2 text-xs text-slate-400"><ShieldCheck className="h-3.5 w-3.5 text-[#a77b21]" /> All client meetings are conducted in person.</p>
 
-            <button type="button" disabled={!staffName} className="mt-9 flex w-full items-center justify-center gap-3 rounded-xl bg-[#d8bb7b] px-5 py-4 text-xs font-bold uppercase tracking-[0.18em] text-[#10233d] transition hover:bg-[#c8a34f] disabled:cursor-not-allowed disabled:opacity-50">
-              Enter workspace <ArrowRight className="h-4 w-4" />
-            </button>
+              <button type="submit" disabled={!staffName} className="group mt-9 flex w-full items-center justify-center gap-3 rounded-xl bg-[#d8bb7b] px-5 py-4 text-xs font-bold uppercase tracking-[0.18em] text-[#10233d] shadow-[0_12px_30px_rgba(200,163,79,0.22)] transition hover:-translate-y-0.5 hover:bg-[#c8a34f] hover:shadow-[0_16px_34px_rgba(200,163,79,0.3)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0">
+                Enter workspace <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </button>
+            </form>
             <p className="mt-8 text-center text-xs text-slate-400">Authorised adviser access only</p>
           </div>
         </main>
