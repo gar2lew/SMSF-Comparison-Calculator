@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Calculator, Download, RotateCcw, Save, Share2 } from 'lucide-react'
 import { ScenarioCard } from '@/components/comparison/ScenarioCard'
 import { ComparisonHero } from '@/components/comparison/ComparisonHero'
@@ -13,6 +13,8 @@ import {
   encodeComparisonQuery,
 } from '@/lib/comparisonState'
 import type { ComparisonOutcome, ComparisonState, ScenarioInput } from '@/lib/types'
+import { getComparisonReport, saveComparisonReport } from '@/lib/comparisonReports'
+import { useAdviserStore } from '@/stores/adviserStore'
 
 const cloneDefaults = (): ComparisonState => ({
   current: { ...DEFAULT_COMPARISON_STATE.current },
@@ -22,11 +24,18 @@ const cloneDefaults = (): ComparisonState => ({
 export function ComparisonPage() {
   const location = useLocation()
   const navigate = useNavigate()
-  const initial = useMemo(() => location.search ? decodeComparisonQuery(location.search) : cloneDefaults(), [location.search])
+  const { reportId } = useParams<{ reportId: string }>()
+  const adviser = useAdviserStore((store) => store.adviser)
+  const savedReport = useMemo(() => reportId ? getComparisonReport(reportId) : null, [reportId])
+  const initial = useMemo(() => savedReport?.state ?? (location.search ? decodeComparisonQuery(location.search) : cloneDefaults()), [location.search, savedReport])
   const [state, setState] = useState<ComparisonState>(initial)
   const [outcome, setOutcome] = useState<ComparisonOutcome | null>(null)
   const [saveOpen, setSaveOpen] = useState(false)
   const [notice, setNotice] = useState('')
+
+  if (reportId && !savedReport) {
+    return <div className="premium-card mx-auto max-w-xl p-10 text-center"><p className="eyebrow">Report unavailable</p><h1 className="mt-3 font-serif text-3xl text-navy">This comparison could not be found.</h1><p className="mt-3 text-sm text-slate-500">It may have been removed or saved on another device.</p><Link to="/dashboard" className="mt-7 inline-flex rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white">Return to dashboard</Link></div>
+  }
 
   const setScenario = (side: keyof ComparisonState, scenario: ScenarioInput) => {
     setState((current) => ({ ...current, [side]: scenario }))
@@ -63,6 +72,21 @@ export function ComparisonPage() {
     URL.revokeObjectURL(url)
   }
 
+  const saveReport = (clientName: string) => {
+    if (!adviser) return
+    try {
+      const result = outcome ?? calculateComparison(state)
+      const report = saveComparisonReport({ id: reportId, adviserId: adviser.id, adviserName: adviser.name, clientName, state, outcome: result })
+      setOutcome(result)
+      setSaveOpen(false)
+      setNotice('Comparison saved')
+      navigate(`/comparison/${report.id}`, { replace: true })
+    } catch {
+      setSaveOpen(false)
+      setNotice('Comparison could not be saved. Check browser storage and try again.')
+    }
+  }
+
   return (
     <div className="space-y-7 pb-10">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -81,7 +105,7 @@ export function ComparisonPage() {
 
       {outcome && <><ComparisonHero outcome={outcome} /><ComparisonChart outcome={outcome} /><YearlyComparison outcome={outcome} /></>}
 
-      <SaveComparisonDialog open={saveOpen} onClose={() => setSaveOpen(false)} onSave={(clientName) => { setSaveOpen(false); setNotice(clientName ? `Ready to save for ${clientName}` : 'Ready to save report') }} />
+      <SaveComparisonDialog open={saveOpen} onClose={() => setSaveOpen(false)} onSave={saveReport} />
     </div>
   )
 }

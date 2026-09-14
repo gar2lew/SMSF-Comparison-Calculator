@@ -199,6 +199,23 @@ export interface ComparisonOutcome {
   yearsCompared: number
 }
 
+export interface ComparisonReport {
+  id: string
+  adviserId: string
+  adviserName: string
+  clientName: string
+  state: ComparisonState
+  outcomeSummary: {
+    currentFinal: number
+    smsfFinal: number
+    deltaFinal: number
+    deltaGrowthPct: number
+    yearsCompared: number
+  }
+  createdAt: string
+  updatedAt: string
+}
+
 export interface YearlyComparisonRow {
   year: string
   balanceA: number

@@ -26,6 +26,7 @@ export default function App() {
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/comparison/new" element={<ComparisonPage />} />
+            <Route path="/comparison/:reportId" element={<ComparisonPage />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
