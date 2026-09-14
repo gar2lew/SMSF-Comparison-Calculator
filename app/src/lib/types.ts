@@ -185,6 +185,20 @@ export interface ComparisonResult {
   yearsCompared: number
 }
 
+export interface ComparisonState {
+  current: ScenarioInput
+  smsf: ScenarioInput
+}
+
+export interface ComparisonOutcome {
+  current: CalculationResult
+  smsf: CalculationResult
+  winner: 'current' | 'smsf' | 'tie'
+  deltaFinal: number
+  deltaGrowthPct: number
+  yearsCompared: number
+}
+
 export interface YearlyComparisonRow {
   year: string
   balanceA: number
