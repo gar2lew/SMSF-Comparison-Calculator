@@ -15,7 +15,7 @@ interface UIState {
 export const useUIStore = create<UIState>()(
   persist(
     (set, get) => ({
-      sidebarOpen: true,
+      sidebarOpen: false,
       theme: 'system',
 
       toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
@@ -34,7 +34,7 @@ export const useUIStore = create<UIState>()(
       },
     }),
     {
-      name: 'smsf-ui-state',
+      name: 'smsf-premium-ui-state',
       onRehydrateStorage: () => {
         return (state) => {
           if (state) applyTheme(state.theme)
