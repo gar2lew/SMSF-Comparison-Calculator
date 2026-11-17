@@ -1,58 +1,26 @@
+import { LogOut, Menu } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { Sun, Moon, LogOut } from 'lucide-react'
-import { useAuthStore } from '@/stores/authStore'
+import { useAdviserStore } from '@/stores/adviserStore'
 import { useUIStore } from '@/stores/uiStore'
-import { Button } from '@/components/ui/Button'
 
 export function Header() {
-  const { profile, signOut } = useAuthStore()
-  const { theme, resolvedTheme, setTheme } = useUIStore()
+  const adviser = useAdviserStore((state) => state.adviser)
+  const signOut = useAdviserStore((state) => state.signOut)
+  const toggleSidebar = useUIStore((state) => state.toggleSidebar)
   const navigate = useNavigate()
 
-  const toggleTheme = () => {
-    if (theme === 'system') {
-      setTheme(resolvedTheme() === 'dark' ? 'light' : 'dark')
-    } else {
-      setTheme(theme === 'dark' ? 'light' : 'dark')
-    }
-  }
-
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/login')
+  const handleSignOut = () => {
+    signOut()
+    navigate('/login', { replace: true })
   }
 
   return (
-    <header className="sticky top-0 z-20 h-14 bg-white/80 dark:bg-gray-950/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 lg:px-6">
-      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-        SMSF Projection Workspace
-      </div>
-
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-[#e7dfd1] bg-[#fbf8f1]/90 px-4 backdrop-blur lg:px-8">
+      <button type="button" onClick={toggleSidebar} className="rounded-lg p-2 text-navy hover:bg-[#eee6d8] lg:hidden" aria-label="Open navigation"><Menu className="h-5 w-5" /></button>
+      <p className="hidden text-xs font-bold uppercase tracking-[0.16em] text-[#9a7730] sm:block">SMSF Comparison Workspace</p>
       <div className="flex items-center gap-3">
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
-          aria-label="Toggle theme"
-        >
-          {resolvedTheme() === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </button>
-
-        {profile && (
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">
-              {profile.fullName}
-            </span>
-            <div className="h-8 w-8 rounded-full bg-brand-100 dark:bg-brand-900 flex items-center justify-center">
-              <span className="text-sm font-bold text-brand-700 dark:text-brand-400">
-                {profile.fullName.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          </div>
-        )}
-
-        <Button variant="ghost" size="sm" onClick={handleSignOut} title="Sign out">
-          <LogOut className="h-4 w-4" />
-        </Button>
+        {adviser && <div className="flex items-center gap-3 border-r border-[#ddd4c5] pr-3"><span className="hidden text-sm font-semibold text-navy sm:inline">{adviser.name}</span><span className="flex h-9 w-9 items-center justify-center rounded-full bg-navy text-sm font-bold text-gold">{adviser.name.charAt(0)}</span></div>}
+        <button type="button" onClick={handleSignOut} className="rounded-lg p-2 text-slate-500 transition hover:bg-[#eee6d8] hover:text-navy" aria-label="Sign out"><LogOut className="h-4 w-4" /></button>
       </div>
     </header>
   )

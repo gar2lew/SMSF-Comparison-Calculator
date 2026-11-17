@@ -185,6 +185,37 @@ export interface ComparisonResult {
   yearsCompared: number
 }
 
+export interface ComparisonState {
+  current: ScenarioInput
+  smsf: ScenarioInput
+}
+
+export interface ComparisonOutcome {
+  current: CalculationResult
+  smsf: CalculationResult
+  winner: 'current' | 'smsf' | 'tie'
+  deltaFinal: number
+  deltaGrowthPct: number
+  yearsCompared: number
+}
+
+export interface ComparisonReport {
+  id: string
+  adviserId: string
+  adviserName: string
+  clientName: string
+  state: ComparisonState
+  outcomeSummary: {
+    currentFinal: number
+    smsfFinal: number
+    deltaFinal: number
+    deltaGrowthPct: number
+    yearsCompared: number
+  }
+  createdAt: string
+  updatedAt: string
+}
+
 export interface YearlyComparisonRow {
   year: string
   balanceA: number

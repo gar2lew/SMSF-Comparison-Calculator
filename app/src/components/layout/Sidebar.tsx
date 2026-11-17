@@ -1,84 +1,31 @@
+import { LayoutDashboard, Plus } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router-dom'
-import {
-  LayoutDashboard,
-  Users,
-  TrendingUp,
-  FileText,
-  Settings,
-  ChevronLeft,
-  Menu,
-} from 'lucide-react'
-import { useUIStore } from '@/stores/uiStore'
 import { cn } from '@/lib/utils'
+import { useUIStore } from '@/stores/uiStore'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/clients', label: 'Clients', icon: Users },
-  { to: '/projections', label: 'Projections', icon: TrendingUp },
-  { to: '/reports', label: 'Reports', icon: FileText },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/comparison/new', label: 'New Comparison', icon: Plus },
 ]
 
 export function Sidebar() {
-  const { sidebarOpen, toggleSidebar } = useUIStore()
+  const sidebarOpen = useUIStore((state) => state.sidebarOpen)
+  const toggleSidebar = useUIStore((state) => state.toggleSidebar)
   const location = useLocation()
 
   return (
     <>
-      <button
-        onClick={toggleSidebar}
-        className="fixed top-3 left-3 z-50 lg:hidden p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm"
-        aria-label="Toggle sidebar"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
-
-      <aside
-        className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 transition-all duration-200',
-          sidebarOpen ? 'w-56 translate-x-0' : '-translate-x-full',
-          'lg:translate-x-0 lg:w-56',
-        )}
-      >
-        <div className="flex items-center justify-between h-14 px-4 border-b border-gray-200 dark:border-gray-800">
-          <span className="font-bold text-lg text-brand-600 dark:text-brand-400">ASG</span>
-          <button
-            onClick={toggleSidebar}
-            className="hidden lg:block p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-            aria-label="Collapse sidebar"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-        </div>
-
-        <nav className="flex-1 py-4 space-y-1 px-3">
+      <aside className={cn('fixed inset-y-0 left-0 z-40 flex w-60 flex-col overflow-hidden bg-navy text-white transition-transform duration-200 lg:translate-x-0', sidebarOpen ? 'translate-x-0' : '-translate-x-full')}>
+        <div className="relative border-b border-white/10 px-7 py-7"><div className="absolute -right-16 -top-20 h-48 w-48 rounded-full border border-gold/20" /><p className="font-serif text-2xl text-gold">ASG</p><p className="mt-1 text-[9px] font-bold uppercase tracking-[0.3em] text-white/55">Partners</p></div>
+        <nav className="flex-1 space-y-2 px-4 py-6">
           {navItems.map((item) => {
-            const isActive = location.pathname.startsWith(item.to)
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800',
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </NavLink>
-            )
+            const active = item.to === '/dashboard' ? location.pathname === item.to : location.pathname.startsWith('/comparison')
+            return <NavLink key={item.to} to={item.to} onClick={() => { if (window.innerWidth < 1024) toggleSidebar() }} className={cn('flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition', active ? 'bg-white/10 text-gold shadow-inner' : 'text-white/65 hover:bg-white/5 hover:text-white')}><item.icon className="h-4 w-4" />{item.label}</NavLink>
           })}
         </nav>
+        <div className="border-t border-white/10 px-7 py-6 text-[10px] leading-5 text-white/40">Private adviser workspace<br />ASG Partners</div>
       </aside>
-
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/30 lg:hidden"
-          onClick={toggleSidebar}
-        />
-      )}
+      {sidebarOpen && <button type="button" className="fixed inset-0 z-30 bg-navy/50 lg:hidden" onClick={toggleSidebar} aria-label="Close navigation" />}
     </>
   )
 }

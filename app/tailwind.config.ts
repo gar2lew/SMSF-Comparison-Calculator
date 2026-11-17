@@ -6,6 +6,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        navy: '#10233d',
+        gold: '#c8a34f',
+        ivory: '#f5f1e9',
+        ink: '#17253a',
         brand: {
           50: '#ecfdf5',
           100: '#d1fae5',
