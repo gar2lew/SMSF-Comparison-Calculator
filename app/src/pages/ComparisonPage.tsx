@@ -29,7 +29,7 @@ export function ComparisonPage() {
   const savedReport = useMemo(() => reportId ? getComparisonReport(reportId) : null, [reportId])
   const initial = useMemo(() => savedReport?.state ?? (location.search ? decodeComparisonQuery(location.search) : cloneDefaults()), [location.search, savedReport])
   const [state, setState] = useState<ComparisonState>(initial)
-  const [outcome, setOutcome] = useState<ComparisonOutcome | null>(null)
+  const outcome = useMemo<ComparisonOutcome>(() => calculateComparison(state), [state])
   const [saveOpen, setSaveOpen] = useState(false)
   const [notice, setNotice] = useState('')
 
@@ -41,8 +41,8 @@ export function ComparisonPage() {
     setState((current) => ({ ...current, [side]: scenario }))
   }
 
-  const calculate = () => setOutcome(calculateComparison(state))
-  const reset = () => { setState(cloneDefaults()); setOutcome(null); setNotice('') }
+  const calculate = () => setNotice('Comparison updated')
+  const reset = () => { setState(cloneDefaults()); setNotice('') }
 
   const share = async () => {
     const query = encodeComparisonQuery(state)
@@ -77,7 +77,6 @@ export function ComparisonPage() {
     try {
       const result = outcome ?? calculateComparison(state)
       const report = saveComparisonReport({ id: reportId, adviserId: adviser.id, adviserName: adviser.name, clientName, state, outcome: result })
-      setOutcome(result)
       setSaveOpen(false)
       setNotice('Comparison saved')
       navigate(`/comparison/${report.id}`, { replace: true })
@@ -103,7 +102,9 @@ export function ComparisonPage() {
 
       <div className="flex flex-wrap items-center justify-center gap-3"><button type="button" onClick={calculate} className="inline-flex h-12 items-center gap-2 rounded-xl bg-gold px-7 text-sm font-bold uppercase tracking-[0.12em] text-navy shadow-[0_14px_30px_rgba(200,163,79,0.25)] hover:bg-[#b9913c]"><Calculator className="h-4 w-4" /> Calculate</button><button type="button" onClick={() => setSaveOpen(true)} className="inline-flex h-12 items-center gap-2 rounded-xl bg-navy px-6 text-sm font-bold text-white"><Save className="h-4 w-4" /> Save report</button>{notice && <span role="status" className="text-sm text-[#987426]">{notice}</span>}</div>
 
-      {outcome && <><ComparisonHero outcome={outcome} /><ComparisonChart outcome={outcome} /><YearlyComparison outcome={outcome} /></>}
+      <ComparisonHero outcome={outcome} />
+      <ComparisonChart outcome={outcome} />
+      <YearlyComparison outcome={outcome} />
 
       <SaveComparisonDialog open={saveOpen} onClose={() => setSaveOpen(false)} onSave={saveReport} />
     </div>
